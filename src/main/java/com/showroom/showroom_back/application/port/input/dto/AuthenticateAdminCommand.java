@@ -6,7 +6,7 @@ public record AuthenticateAdminCommand(
         String email,
         String password
 ) {
-    // Constructor compacto valida entrada básica
+
     public AuthenticateAdminCommand {
         Objects.requireNonNull(email, "Email is required");
         Objects.requireNonNull(password, "Password is required");
