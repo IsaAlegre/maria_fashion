@@ -16,6 +16,7 @@ public record Product(
         ProductDescription description,
         ProductPrice price,
         Stock stock,
+        ProductStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -25,6 +26,7 @@ public record Product(
         Objects.requireNonNull(description, "Product description cannot be null");
         Objects.requireNonNull(price, "Product price cannot be null");
         Objects.requireNonNull(stock, "Product stock cannot be null");
+        Objects.requireNonNull(status, "Product status cannot be null");
         Objects.requireNonNull(createdAt, "Product createdAt cannot be null");
         Objects.requireNonNull(updatedAt, "Product updatedAt cannot be null");
     }
@@ -43,6 +45,7 @@ public record Product(
                 ProductDescription.of(description),
                 ProductPrice.of(price),
                 Stock.of(stockQuantity),
+                ProductStatus.DRAFT,
                 now,
                 now
         );
@@ -70,6 +73,7 @@ public record Product(
                 this.description,
                 this.price,
                 this.stock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -83,6 +87,7 @@ public record Product(
                 updatedDescription,
                 this.price,
                 this.stock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -96,6 +101,7 @@ public record Product(
                 this.description,
                 updatedPrice,
                 this.stock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -109,6 +115,7 @@ public record Product(
                 this.description,
                 this.price,
                 updatedStock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -123,6 +130,7 @@ public record Product(
                 this.description,
                 this.price,
                 updatedStock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -136,6 +144,7 @@ public record Product(
                 this.description,
                 this.price,
                 updatedStock,
+                this.status,
                 this.createdAt,
                 LocalDateTime.now()
         );
@@ -144,5 +153,78 @@ public record Product(
 
     public ProductPrice totalPrice(int quantity) {
         return this.price.multiply(quantity);
+    }
+
+    // Métodos para cambiar estado
+    public Product publish() {
+        if (this.status != ProductStatus.DRAFT) {
+            throw new IllegalStateException("Only DRAFT products can be published");
+        }
+        return new Product(
+                this.id,
+                this.name,
+                this.description,
+                this.price,
+                this.stock,
+                ProductStatus.ACTIVE,
+                this.createdAt,
+                LocalDateTime.now()
+        );
+    }
+
+    public Product unpublish() {
+        return new Product(
+                this.id,
+                this.name,
+                this.description,
+                this.price,
+                this.stock,
+                ProductStatus.INACTIVE,
+                this.createdAt,
+                LocalDateTime.now()
+        );
+    }
+
+    public Product discontinue() {
+        return new Product(
+                this.id,
+                this.name,
+                this.description,
+                this.price,
+                this.stock,
+                ProductStatus.DISCONTINUED,
+                this.createdAt,
+                LocalDateTime.now()
+        );
+    }
+
+    public Product updateStatus(ProductStatus newStatus) {
+        return new Product(
+                this.id,
+                this.name,
+                this.description,
+                this.price,
+                this.stock,
+                newStatus,
+                this.createdAt,
+                LocalDateTime.now()
+        );
+    }
+
+    // Query métodos para estado
+    public boolean isActive() {
+        return this.status == ProductStatus.ACTIVE;
+    }
+
+    public boolean canBePurchased() {
+        return this.status == ProductStatus.ACTIVE && this.stock.isInStock();
+    }
+
+    public boolean isDraft() {
+        return this.status == ProductStatus.DRAFT;
+    }
+
+    public boolean isDiscontinued() {
+        return this.status == ProductStatus.DISCONTINUED;
     }
 }
