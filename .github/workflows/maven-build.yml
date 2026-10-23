@@ -28,10 +28,3 @@ jobs:
 
       - name: Build package
         run: mvn package -DskipTests
-
-      - name: Upload build artifacts
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-logs
-          path: target/
