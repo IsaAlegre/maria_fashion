@@ -9,4 +9,6 @@ public interface AdminRepositoryPort {
     Admin findByEmail(AdminEmail email);
     Admin save(Admin admin);
     Admin findById(AdminId id);
+    boolean existsById(AdminId id);
+    boolean existsByEmail(AdminEmail email);
 }
