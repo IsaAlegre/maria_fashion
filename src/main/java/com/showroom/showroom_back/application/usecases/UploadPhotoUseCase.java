@@ -28,7 +28,7 @@ public class UploadPhotoUseCase implements UploadPhotoInputPort {
         Product product = productRepository.findById(productId);
 
         if(!photoStorage.isValidImageFile(file)) {
-            throw new InvalidPhotoFileException("Invalid photo file type. Only JPEG and PNG are allowed.");
+            throw new InvalidPhotoFileException("Invalido el tipo de archivo. Solo se permiten imágenes JPEG, PNG o GIF.");
         }
 
         PhotoUrl photoUrl = photoStorage.uploadPhoto(file);
