@@ -1,5 +1,7 @@
 package com.showroom.showroom_back.infrastructure.config;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -39,11 +41,14 @@ public class SecurityConfig {
      */
     @Bean
     public JwtEncoder jwtEncoder() {
-        SecretKeySpec key = new SecretKeySpec(jwtSecret.getBytes(), 0, jwtSecret.getBytes().length, "HmacSHA256");
-        OctetSequenceKey octetSequenceKey = new OctetSequenceKey.Builder(key).build();
-        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new com.nimbusds.jose.jwk.JWKSet(octetSequenceKey));
+        SecretKeySpec key = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
+        OctetSequenceKey octetSequenceKey = new OctetSequenceKey.Builder(key)
+                .algorithm(JWSAlgorithm.HS256)
+                .build();
+        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(octetSequenceKey));
         return new NimbusJwtEncoder(jwkSource);
     }
+
 
     /**
      * Crea el JwtDecoder con la clave secreta
