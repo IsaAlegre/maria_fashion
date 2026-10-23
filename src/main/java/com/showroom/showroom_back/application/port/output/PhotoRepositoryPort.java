@@ -13,5 +13,5 @@ public interface PhotoRepositoryPort {
     Photo findById(UUID photoId);
     void delete(UUID photoId);
     void deleteByProductId(ProductId productId);
-    int countByProductId(ProductId productId);
+    long countByProductId(ProductId productId);
 }
